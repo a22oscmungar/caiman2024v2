@@ -1,0 +1,104 @@
+[
+    {
+        "id" : 1,
+        "question": "¿Quién no estuvo en la casa de fin de año con el grupo de Sant Sadurní?",
+        "options": ["Carla", "Javier", "Marcos", "Oscar"],
+        "correctAnswer": "Carla"
+    },
+    {
+        "id" : 2,
+        "question": "¿A cual de estos videojuegos ha jugado la mayoria del grupo este año?",
+        "options": ["Tomb Raider", "Fortnite", "Los sims 3", "TeamFight Tactics"],
+        "correctAnswer": "Fortnite"
+    },
+    {
+        "id" : 3,
+        "question": "¿Dónde compra Javier gran parte de los regalos a mujeres?",
+        "options": ["Zara", "Tous", "Pandora", "Massimo Dutti"],
+        "correctAnswer": "Tous"
+    },
+    {
+        "id" : 4,
+        "question": "¿Quién posee actualmente el nivel más alto de estudios académicos?",
+        "options": ["Aitor", "Ana", "Javier", "Oscar"],
+        "correctAnswer": "Javier"
+    },
+    {
+        "id" : 5,
+        "question": "¿Quién pidió que España ganase la Eurocopa para que RoRo lo hiciera posible?",
+        "options": ["Pablo","Marcos", "Oscar",  "Javier"],
+        "correctAnswer": "Pablo"
+    },
+    {
+        "id" : 6,
+        "question": "¿Cuál de estos platos cocinó en gran parte Aitor?",
+        "options": ["Paella", "Smash Burgers", "Pizza", "Ensalada"],
+        "correctAnswer": "Smash Burgers"
+    },
+    {
+        "id" : 7,
+        "question": "¿Cuál de estos platos cocinó 'en gran parte' Carla (o sea Oscar y Noa)?",
+        "options": ["Lasaña", "Paella", "Macarrones", "Sopa"],
+        "correctAnswer": "Macarrones"
+    },
+    {
+        "id" : 8,
+        "question": "¿En qué puesto (sobre 21 equipos) quedó Oscar en el concurso de programación nacional?",
+        "options": ["7", "14", "19", "21"],
+        "correctAnswer": "19"
+    },
+    {
+        "id" : 9,
+        "question": "¿Qué había que decir para animar a Marcos jugando a volleyball?",
+        "options": ["¡Dale ahí!", "¡Vamos, Marcos!", "¡A por todas!", "¡Eres el mejor!"],
+        "correctAnswer": "¡Vamos, Marcos!"
+    },
+    {
+        "id" : 10,
+        "question": "¿Qué serie han visto Javier y Oscar aconsejados por Noa y Carla?",
+        "options": ["Los Bridgerton", "Juego de Tronos", "La Casa de Papel", "Élite"],
+        "correctAnswer": "Los Bridgerton"
+    },
+    {
+        "id" : 11,
+        "question": "¿Quién fue el invitado especial en carnaval de 2024?",
+        "options": ["Laura y el panzas", "Claudia y el porros", "Maria y el chupitos", "Paula y el ventosas"],
+        "correctAnswer": "Paula y el ventosas"
+    },
+    {
+        "id" : 12,
+        "question": "¿Cuál fue el disfraz grupal en Halloween de 2024?",
+        "options": ["Caimanes", "5 de enero", "8 de marzo", "23 de marzo"],
+        "correctAnswer": "Caimanes"
+    },
+    {
+        "id" : 13,
+        "question": "¿Cuál es el inmueble soñado de Marcos y temido por Noa?",
+        "options": ["Caimanes", "Autobus", "8 de marzo", "23 de marzo"],
+        "correctAnswer": "Autobus"
+    },
+    {
+        "id" : 14,
+        "question": "¿De que ha conseguido trabajo Oscar?",
+        "options": ["Caimanes", "Autobus", "Desarrollador de software", "23 de marzo"],
+        "correctAnswer": "Desarrollador de software"
+    },
+    {
+        "id" : 15,
+        "question": "¿Quién no ha empezado nuevos estudios este año?",
+        "options": ["Caimanes", "Autobus", "Desarrollador de software", "Aitor"],
+        "correctAnswer": "Aitor"
+    },
+    {
+        "id" : 16,
+        "question": "¿Que se ha tatuado Noa en septiembre?",
+        "options": ["Una rosa", "'Stargirl'", "'Strong woman'", "'Love'"],
+        "correctAnswer": "'Stargirl'"
+    },
+    {
+        "id" : 17,
+        "question": "Juego de mesa que Aitor ama y Javier odia",
+        "options": ["Bang", "Risk", "Monopoly", "Scattergories"],
+        "correctAnswer": "Bang"
+    }
+]
