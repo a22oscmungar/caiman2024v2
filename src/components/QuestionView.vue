@@ -1,9 +1,13 @@
 <template>
   <div class="question-view">
     <div v-if="username === 'admin'" class="player-info">
+      <p>Jugadores conectados:</p> <br>
+      <div class="players">
       <div v-for="(player, index) in players" :key="index" class="player-details">
-        <p>{{ player.nombre }}</p>
+        
+        <p>{{ player }}</p>
       </div>
+    </div>
     </div>
     
     <img src="../assets/logowaiting.png" alt="Caimán" width="150" height="150">
@@ -84,16 +88,16 @@ export default {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/connected-players');
+      const response = await fetch('http://localhost:8000/getConnectedPlayers');
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
       const data = await response.json();
+      console.log('data', data);
       this.players = data.players; // Asignar correctamente los jugadores recibidos
-    } catch (err) {
-      console.error('Error al cargar los jugadores:', err);
+
+    } catch (error) {
       this.error = 'Error al cargar los jugadores';
-      this.loading = false;
     }
   },
   methods: {
@@ -186,7 +190,17 @@ export default {
 
 .player-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.players{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 }
 
 .player-info img {

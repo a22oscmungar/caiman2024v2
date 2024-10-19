@@ -65,8 +65,8 @@ app.post('/login', (req, res) => {
 
 
 
-app.get('/connected-players', (req, res) => {
-    res.json(connectedUsers);
+app.get('/getConnectedPlayers', (req, res) => {
+    res.json({players: connectedUsers});
 });
 
 let currentQuestionData = null;
@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
 
     socket.on('set-username', (username) => {
         socket.username = username; // Asignar el nombre de usuario al socket
-        if (!connectedUsers.includes(username)) {
+        if (!connectedUsers.includes(username) && username !== 'admin') {
             connectedUsers.push(username);
         }
         io.emit('update-players', connectedUsers); // Enviar la lista actualizada a todos los clientes
