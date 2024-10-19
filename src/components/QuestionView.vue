@@ -1,40 +1,43 @@
 <template>
   <div class="question-view">
-    <div class="player-info">
-      <p>{{ username }}</p>
+    <div v-if="username === 'admin'" class="player-info">
+      <div v-for="(player, index) in players" :key="index" class="player-details">
+        <p>{{ player.nombre }}</p>
+      </div>
     </div>
+    
+    <img src="../assets/logowaiting.png" alt="Caimán" width="150" height="150">
 
     <div v-if="username === 'admin'" class="question-section">
-      <p>{{ this.currentQuestion.question }}</p>
-      <div
-        v-for="(option, index) in this.currentQuestion.options"
-        :key="index"
-        :class="['option', { selected: selectedOption === index }]"
-        @click="selectOption(index)"
-      >
-        {{ option }}
-        
+      <div class="enunciado">
+        <p>{{ currentQuestion.question }}</p>
+      </div>  
+      <div class="option-grid">
+        <div v-for="(option, index) in currentQuestion.options" :key="index"
+          :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
+          @click="selectOption(index)">
+          {{ option }}
+        </div>
       </div>
-      
-      <button @click="next()"> SIGUIENTE PREGUNTA</button>
-
+      <button class="resolve-button" @click="resolver()">RESOLVER</button>
+      <button class="next-button" @click="next()">SIGUIENTE PREGUNTA</button>
     </div>
 
     <div v-else class="player-buttons">
-      <p>{{ this.currentQuestion.question }}</p>
+      <div class="preguntaUsuario">
+        <p>{{ currentQuestion.question }}</p>
+      </div>
       <div class="button-grid">
-        <button
-          v-for="(option, index) in this.currentQuestion.options"
-          :key="index"
+        <button v-for="(option, index) in currentQuestion.options" :key="index"
           @click="selectOption(index)"
-          :class="{ selected: selectedOption === index }"
-        >
+          :class="['option', getOptionClass(index), { selected: selectedOption === index }]">
           Opción {{ index + 1 }}
         </button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import { io } from 'socket.io-client';
@@ -52,7 +55,9 @@ export default {
       currentQuestionIndex: 0,
       loading: true,
       error: null,
-      currentQuestion: { question: '', options: [] },
+      players: [], // Array para almacenar los jugadores conectados
+      logo: '../assets/logowaiting.png',
+      currentQuestion: { question: '', options: [], correctAnswer: 0},
     };
   },
   async created() {
@@ -68,19 +73,26 @@ export default {
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
-      console.log('Preguntas recibidas');
-      
-      
-
-      const data = await response.json(); // Aquí parsea el JSON correctamente
+      const data = await response.json();
       this.questions = data.questions;
-      console.log('Preguntas:', this.questions);  
       
       this.currentQuestion = this.questions[this.currentQuestionIndex];
-
     } catch (err) {
       console.error('Error al cargar las preguntas:', err);
       this.error = 'Error al cargar las preguntas';
+      this.loading = false;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/connected-players');
+      if (!response.ok) {
+        throw new Error(`Error del servidor: ${response.statusText}`);
+      }
+      const data = await response.json();
+      this.players = data.players; // Asignar correctamente los jugadores recibidos
+    } catch (err) {
+      console.error('Error al cargar los jugadores:', err);
+      this.error = 'Error al cargar los jugadores';
       this.loading = false;
     }
   },
@@ -92,8 +104,14 @@ export default {
       this.currentQuestionIndex++;
       this.currentQuestion = this.questions[this.currentQuestionIndex];
       this.selectedOption = null;
-
       this.socket.emit('nextQuestion', this.currentQuestion);
+
+      // Limpiar las clases de las opciones
+      const options = document.getElementsByClassName('option');
+      for (let i = 0; i < options.length; i++) {
+        options[i].classList.remove('opcion-correcta');
+        options[i].classList.remove('opcion-incorrecta');
+      }
     },
     async submitAnswer() {
       if (this.selectedOption === null) {
@@ -116,16 +134,54 @@ export default {
         console.error('Error al enviar la respuesta:', err);
       }
     },
+
+    getOptionClass(index) {
+      const colors = ['blue', 'green', 'orange', 'yellow'];
+      return colors[index] || '';
+    },
+    resolver(){
+      // haremos que cuando el admin presione el botón de resolver, la opcion de la respuesta correcta se pinte de verde y el resto de rojo
+
+      // recorremos las opciones
+      console.log('currentQuestion', this.currentQuestion);
+      
+      this.currentQuestion.options.forEach((option, index) => {
+        // si la opcion es la correcta
+        
+        console.log('opcion ', index, ' es correcta? ', (index+1) === this.currentQuestion.correctAnswer, " correcta: ", this.currentQuestion.correctAnswer);
+        if ((index+1) === this.currentQuestion.correctAnswer) {
+          // pintamos la opcion de verde
+          document.getElementsByClassName('option')[index].classList.add('opcion-correcta');
+          
+          
+        } else {
+          // pintamos el resto de opciones de rojo
+          document.getElementsByClassName('option')[index].classList.add('opcion-incorrecta');
+        }
+      });
+     
+        
+      
+
+
+
+    }
   },
 };
 </script>
+
 
 <style scoped>
 .question-view {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
+  background-color: antiquewhite;
+  height: 100vh;
+  padding: 1rem;
+  overflow: hidden;
 }
 
 .player-info {
@@ -142,6 +198,70 @@ export default {
 
 .question-section {
   background-color: white;
+  padding: 80px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 50%;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0;
+}
+
+.option {
+  padding: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.blue {
+  background-color: #007bff;
+}
+
+.green {
+  background-color: #28a745;
+}
+
+.orange {
+  background-color: #c48614;
+}
+
+.yellow {
+  background-color: purple;
+}
+
+.action-button {
+  background-color: #6c757d;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.action-button:hover {
+  background-color: #5a6268;
+}
+
+.preguntaUsuario {
+  background-color: ghostwhite;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -150,44 +270,87 @@ export default {
   text-align: center;
 }
 
-.option {
-  margin: 10px 0;
-  padding: 10px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  border-radius: 5px;
-  text-align: center;
-}
-
-.option.selected {
-  background-color: #d0e1f9;
-  border-color: #007bff;
-}
-
 .player-buttons {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  gap: 1rem;
 }
 
 .button-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 25px;
+  margin: 0;
+  margin-top: 20%;
 }
 
 button {
-  padding: 10px;
+  padding: 50px;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #4CAF50;
   color: white;
   border: none;
   transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #45a049;
+.button-grid button:nth-child(1) {
+  background-color: #007bff; /* Azul */
 }
+
+.button-grid button:nth-child(2) {
+  background-color: #28a745; /* Verde */
+}
+
+.button-grid button:nth-child(3) {
+  background-color: #dc3545; /* Rojo */
+}
+
+.button-grid button:nth-child(4) {
+  background-color: purple; /* Amarillo */
+}
+
+.resolve-button {
+  background-color: grey;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  
+}
+
+.next-button {
+  background-color: grey;
+  border: none;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.resolve-button:hover, .next-button:hover {
+  background-color: green;
+}
+
+.opcion-correcta {
+  background-color: green;
+}
+
+.opcion-incorrecta {
+  background-color: red;
+}
+
+
 </style>

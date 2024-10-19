@@ -13,16 +13,12 @@ const io = socketIo(server);
 const port = 8000;
 
 let connectedUsers = [];
-let playerImages = {
-    'aitor': 'fotos/aitor.jpeg',
-    'marcos': 'fotos/marcos.jpeg',
-    'admin': 'fotos/admin.jpeg'
-};
 
 let questionsTrivia = [];
 let questionsKahoot = [];
 
 const cors = require('cors');
+const { log } = require('console');
 app.use(cors({ origin: 'http://localhost:8080', credentials: true }));
 
 // Cargar preguntas desde el archivo JSON
@@ -32,10 +28,10 @@ fs.readFile('questionsTrivia.json', 'utf8', (err, data) => {
         return;
     }
     questionsTrivia = JSON.parse(data);
-    console.log('Preguntas cargadas:', questionsTrivia);
     
     
 });
+
 
 fs.readFile('questionsKahoot.json', 'utf8', (err, data) => {
     if (err) {
@@ -43,7 +39,6 @@ fs.readFile('questionsKahoot.json', 'utf8', (err, data) => {
         return;
     }
     questionsKahoot = JSON.parse(data);
-    console.log('Preguntas cargadas:', questionsKahoot);
     
 });
 
@@ -67,6 +62,9 @@ app.post('/login', (req, res) => {
     }
 });
 
+
+
+
 app.get('/connected-players', (req, res) => {
     res.json(connectedUsers);
 });
@@ -86,7 +84,7 @@ app.post('/start-game', (req, res) => {
 
 app.get('/getQuestionsKahoot', (req, res) => {
     if (questionsTrivia && questionsTrivia.length > 0) {
-        res.json({ questions: questionsTrivia });
+        res.json({ questions: questionsKahoot });
     } else {
         res.status(404).json({ error: 'No se encontraron preguntas' });
     }

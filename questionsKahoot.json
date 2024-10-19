@@ -4,97 +4,121 @@
         "id" : 1,
         "question": "¿Cuándo es el cumpleaños de Aitor?",
         "options": ["15 de febrero", "5 de enero", "8 de marzo", "23 de marzo"],
-        "correctAnswer": "8 de marzo"
+        "correctAnswer": 3
     },
     {
         "id" : 2,
         "question": "¿Cuándo es el cumpleaños de Oscar?",
         "options": ["20 de agosto", "5 de enero", "8 de marzo", "23 de marzo"],
-        "correctAnswer": "20 de agosto"
+        "correctAnswer": 1
     },
     {
         "id" : 3,
         "question": "¿Cuándo es el cumpleaños de Javier?",
         "options": ["20 de agosto", "28 de mayo", "8 de marzo", "23 de marzo"],
-        "correctAnswer": "28 de mayo"
+        "correctAnswer": 2
     },
     {
         "id" : 4,
         "question": "¿Cuándo es el cumpleaños de Manel?",
         "options": ["20 de agosto", "28 de mayo", "8 de marzo", "14 de julio"],
-        "correctAnswer": "14 de julio"
+        "correctAnswer": 4
     },
     {
         "id" : 5,
         "question": "¿Cuándo es el cumpleaños de Noa?",
         "options": ["5 de enero", "28 de mayo", "8 de marzo", "23 de marzo"],
-        "correctAnswer": "5 de enero"
+        "correctAnswer": 1
     },
     {
         "id" : 6,
         "question": "¿Cuándo es el cumpleaños de Carla?",
         "options": ["5", "28 de mayo", "8 de marzo", "9 de julio"],
-        "correctAnswer": "9 de julio"
+        "correctAnswer": 4
     },
     {
         "id" : 7,
         "question": "¿Cuándo es el cumpleaños de Marcos?",
         "options": ["5", "9 de abril", "8 de marzo", "9 de julio"],
-        "correctAnswer": "9 de abril"
+        "correctAnswer": 2
     },
     {
         "id" : 8,
         "question": "¿Cuándo es el cumpleaños de Ana?",
         "options": ["31 de julio", "9 de abril", "8 de marzo", "9 de julio"],
-        "correctAnswer": "9 de abril"
+        "correctAnswer": 2
     },
     {
         "id" : 9,
         "question": "¿Que Grado Superior ha estudiado Manel?",
         "options": ["Administrativo", "Marketing", "Dirección de empresas", "Desarrollo de sistemas"],
-        "correctAnswer": "Marketing"
+        "correctAnswer": 2
     },
     {
         "id" : 10,
         "question": "¿Como se llama la empresa donde trabaja Oscar?",
         "options": ["Grupo Hiemesa", "Hierros Viladecavalls", "Hierros Molina", "Grupos Acemar"],
-        "correctAnswer": "Grupo Hiemesa"
+        "correctAnswer": 1
     },
     {
         "id" : 11,
         "question": "¿Como se llama el grupo de hoteles donde trabaja Manel?",
         "options": ["H10", "Hilton", "Marina d'Or", "Vela"],
-        "correctAnswer": "H10"
+        "correctAnswer": 1 
     },
     {
         "id" : 12,
         "question": "¿Cual es la flor favorita de Carla?",
         "options": ["Tulipanes amarillos", "Rosas negras", "Flor de loto", "Lirios azules"],
-        "correctAnswer": "Tulipanes amarillos"
+        "correctAnswer": 1
     },
     {
         "id" : 13,
-        "question": "¿Cual es la flor favorita de Carla?",
-        "options": ["Tulipanes amarillos", "Rosas negras", "Flor de loto", "Lirios azules"],
-        "correctAnswer": "Tulipanes amarillos"
+        "question": "¿Cual es la flor favorita de Oscar?",
+        "options": ["Girasol", "Rosa", "Crisantemo", "Flor del dragón"],
+        "correctAnswer": 1
     },
     {
         "id" : 14,
         "question": "¿Cuantos tatuajes tiene Oscar actualmente?",
         "options": ["26", "15", "30", "32"],
-        "correctAnswer": "30"
+        "correctAnswer": 3
     },
     {
         "id" : 15,
         "question": "¿Como se llama la psicologa de Oscar y Noa?",
         "options": ["Sara", "Paula", "Mireia", "Andrea"],
-        "correctAnswer": "Mireia"
+        "correctAnswer": 3
     },    
     {
         "id" : 16,
         "question": "¿Como se llaman los padres de Marcos?",
         "options": ["Julian y Montse", "Jorge y Marisol", "Jose y Laura", "Jose y Montse"],
-        "correctAnswer": "Jose y Montse"
+        "correctAnswer": 4
+    },
+    {
+        "id" : 17,
+        "question": "¿A que discoteca quiere ir Javier?",
+        "options": ["Sokko", "Malalts", "Ushuaia", "Pachá"],
+        "correctAnswer": 3
+    },
+    {
+        "id" : 18,
+        "question": "¿Cual es uno de los artistas favoritos de Ana?",
+        "options": ["Walls", "Duki", "Milo J", "Wos"],
+        "correctAnswer": 2
+    },
+    {
+        "id" : 19,
+        "question": "¿Cual es el color favorito de Noa?",
+        "options": ["Rojo", "Rosa", "Morado", "Salmón"],
+        "correctAnswer": 1
+    },
+    {
+        "id" : 20,
+        "question": "¿Que carrera ha estudiado Ana?",
+        "options": ["Filologia clásica", "Ciencias de la antiguedad", "Filologia hispánica", "Humanidades"],
+        "correctAnswer": 2
     }
     
 
