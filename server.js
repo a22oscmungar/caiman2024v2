@@ -17,6 +17,7 @@ let connectedUsers = [];
 let questionsTrivia = [];
 let questionsKahoot = [];
 const playerResponses = {};
+let players = [];
 
 
 const cors = require('cors');
@@ -92,6 +93,15 @@ app.get('/getQuestionsKahoot', (req, res) => {
     }
 });
 
+app.get('/getQuestionsTrivia', (req, res) => {
+    if (questionsTrivia && questionsTrivia.length > 0) {
+        questionsTrivia.sort = () => Math.random() - 0.5;
+        res.json({ questions: questionsTrivia });
+    } else {
+        res.status(404).json({ error: 'No se encontraron preguntas' });
+    }
+});
+
 
 
 app.get('/current-question', (req, res) => {
@@ -104,6 +114,16 @@ app.get('/current-question', (req, res) => {
         res.status(400).json({ error: 'No hay pregunta activa' });
     }
 });
+
+app.post('/updatePlayers', (req, res) => {
+    players = req.body.players;
+    res.json({ success: true });
+});
+
+app.get('/getPlayers', (req, res) => {
+    res.json({ players });
+});
+
 
 
 io.on('connection', (socket) => {

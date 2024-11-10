@@ -1,7 +1,7 @@
 <template>
   <div class="question-view">
     <div v-if="username === 'admin'" class="player-info">
-      <b>Jugadores conectados:</b> <br>
+      <b>Puntuaciones:</b> <br>
       <div class="players">
         <div v-for="(player, index) in players" :key="index" class="player-details">
 
@@ -35,8 +35,8 @@
       <div class="button-grid">
         <button v-for="(option, index) in currentQuestion.options" :key="index" @click="selectOption(index)"
           :class="['option', getOptionClass(index), { selected: selectedOption === index }]">
-          
-          {{ option}}
+
+          {{ option }}
         </button>
       </div>
       <button class="action-button" @click="submitAnswer">Enviar respuesta</button>
@@ -78,7 +78,7 @@ export default {
     this.socket.on('new-answer', (data) => {
       this.playerAnswers.push(data);
       console.log('Respuestas de los jugadores:', this.playerAnswers);
-      
+
     });
 
     this.socket.on('resolve-results', (results) => {
@@ -87,7 +87,12 @@ export default {
     });
 
     this.socket.on('redirect-to-trivia-room', () => {
-      this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
+      this.$router.push({
+        name: 'trivia-room',
+        query: {
+          username: this.username,
+        }
+      });
     });
 
     try {
@@ -122,13 +127,23 @@ export default {
     selectOption(index) {
       this.selectedOption = index;
     },
-    next() {
+    async next() {
       if (this.currentQuestionIndex === this.questions.length - 1) {
         // push al path TriviaRoom con el username y los players
 
+        const response = await fetch('http://localhost:8000/updatePlayers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ players: this.players }),
+        });
+        const data = await response.json();
+        console.log('data', data);
+
         this.socket.emit('redirect-to-trivia-room');
 
-      //  this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
+        //  this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
         return;
       }
       this.currentQuestionIndex++;
@@ -194,9 +209,9 @@ export default {
             if (player.username === playerAnswer.player) {
               player.score++;
               console.log('player.score', player.score);
-            }else{
+            } else {
               console.log('player.score', player.score);
-              
+
             }
           });
         }
@@ -351,11 +366,12 @@ export default {
   margin-top: 20%;
 }
 
-/* button grid al ser presionado */ 
+/* button grid al ser presionado */
 .button-grid button.selected {
   background-color: pink;
   border-color: black !important;
 }
+
 .button-grid:disabled {
   background-color: grey;
 }
