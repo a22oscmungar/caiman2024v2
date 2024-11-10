@@ -16,6 +16,8 @@ let connectedUsers = [];
 
 let questionsTrivia = [];
 let questionsKahoot = [];
+const playerResponses = {};
+
 
 const cors = require('cors');
 const { log } = require('console');
@@ -28,8 +30,8 @@ fs.readFile('questionsTrivia.json', 'utf8', (err, data) => {
         return;
     }
     questionsTrivia = JSON.parse(data);
-    
-    
+
+
 });
 
 
@@ -39,7 +41,7 @@ fs.readFile('questionsKahoot.json', 'utf8', (err, data) => {
         return;
     }
     questionsKahoot = JSON.parse(data);
-    
+
 });
 
 app.use(express.json());
@@ -52,7 +54,7 @@ app.post('/login', (req, res) => {
 
     if (users[username] && users[username] === password) {
         if (!connectedUsers.includes(username)) {
-            connectedUsers.push(username);
+            //connectedUsers.push({username: username, score: 0});
             io.emit('user-connected', username);
         }
         // Envía una respuesta de éxito sin redireccionar
@@ -66,20 +68,20 @@ app.post('/login', (req, res) => {
 
 
 app.get('/getConnectedPlayers', (req, res) => {
-    res.json({players: connectedUsers});
+    res.json({ players: connectedUsers });
 });
 
 let currentQuestionData = null;
 
-app.post('/start-game', (req, res) => {   
-                // Emitir todas las preguntas a través del socket
-        io.emit('start-question', currentQuestionData);
+app.post('/start-game', (req, res) => {
+    // Emitir todas las preguntas a través del socket
+    io.emit('start-question', currentQuestionData);
 
-        // Emitir una señal a todos los jugadores para redirigir a la página de pregunta
-        io.emit('redirect-to-question');
+    // Emitir una señal a todos los jugadores para redirigir a la página de pregunta
+    io.emit('redirect-to-question');
 
-        res.json({ success: true });
-    
+    res.json({ success: true });
+
 });
 
 app.get('/getQuestionsKahoot', (req, res) => {
@@ -97,7 +99,7 @@ app.get('/current-question', (req, res) => {
         res.setHeader('Content-Type', 'application/json'); // Establecer el encabezado
         res.json(currentQuestionData);
         console.log('Pregunta actual:', currentQuestionData);
-        
+
     } else {
         res.status(400).json({ error: 'No hay pregunta activa' });
     }
@@ -113,31 +115,59 @@ io.on('connection', (socket) => {
     socket.on('set-username', (username) => {
         socket.username = username; // Asignar el nombre de usuario al socket
         if (!connectedUsers.includes(username) && username !== 'admin') {
-            connectedUsers.push(username);
+            connectedUsers.push({ username: socket.username, score: 0 });
+            console.log('Usuarios conectados:', connectedUsers);
+
         }
         io.emit('update-players', connectedUsers); // Enviar la lista actualizada a todos los clientes
     });
 
     socket.on('disconnect', () => {
         console.log('Un usuario se ha desconectado.');
-        connectedUsers = connectedUsers.filter(user => user !== socket.username);
+        connectedUsers = connectedUsers.filter(user => user.username !== socket.username);
         io.emit('update-players', connectedUsers); // Enviar la lista actualizada a todos los clientes
     });
 
     socket.on('submit-answer', (data) => {
-        const correctAnswer = currentQuestion.correctAnswer;
-        console.log('Respuesta recibida:', data.answer);
-        if (data.answer === correctAnswer) {
-            socket.emit('answer-result', { message: '¡Respuesta correcta!' });
-        } else {
-            socket.emit('answer-result', { message: 'Respuesta incorrecta.' });
+        // Guardar la respuesta del jugador
+        playerResponses[data.player] = data.answer;
+
+        // Emitir al administrador para que actualice la lista de respuestas
+        io.emit('new-answer', {
+            player: data.player,
+            answer: data.answer
+        });
+    });
+
+    socket.on('resolve-answers', () => {
+        const results = [];
+        for (const player in playerResponses) {
+            const isCorrect = playerResponses[player] === currentQuestion.correctAnswer;
+            if (isCorrect) {
+                // Lógica para sumar puntos al jugador
+            }
+            results.push({
+                player,
+                correct: isCorrect
+            });
         }
+
+        // Enviar los resultados al admin
+        socket.emit('resolve-results', results);
+
+        // Reiniciar las respuestas para la siguiente pregunta
+        Object.keys(playerResponses).forEach(key => delete playerResponses[key]);
     });
 
     socket.on('nextQuestion', (question) => {
         // Emitir la nueva pregunta a todos los clientes conectados
         socket.broadcast.emit('newQuestion', question);
-      });
+    });
+
+    //socket para redigiar a los usuarios a trivia-room
+    socket.on('redirect-to-trivia-room', () => {
+        io.emit('redirect-to-trivia-room');
+    });
 });
 
 

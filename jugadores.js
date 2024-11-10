@@ -1,12 +1,12 @@
 const users = {
     'admin': 'admin123',
-    'aitor': 'comodigoyo',
-    'marcos': 'autobus',
-    'javier': "machote",
-    'manel': "monster",
-    'noa': "autismo",
-    'ana': "panda",
-    'carla': "bancarrota"
+    'Aitor': 'comodigoyo',
+    'Marcos': 'autobus',
+    'Javier': "machote",
+    'Manel': "monster",
+    'Noa': "autismo",
+    'Ana': "panda",
+    'Carla': "bancarrota"
 };
 
 module.exports = users;

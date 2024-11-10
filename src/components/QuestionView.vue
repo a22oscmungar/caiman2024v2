@@ -1,21 +1,22 @@
 <template>
   <div class="question-view">
     <div v-if="username === 'admin'" class="player-info">
-      <p>Jugadores conectados:</p> <br>
+      <b>Jugadores conectados:</b> <br>
       <div class="players">
-      <div v-for="(player, index) in players" :key="index" class="player-details">
-        
-        <p>{{ player }}</p>
+        <div v-for="(player, index) in players" :key="index" class="player-details">
+
+          <p>{{ player.username }}</p>
+          <p>{{ player.score }}</p>
+        </div>
       </div>
     </div>
-    </div>
-    
-    <img src="../assets/logowaiting.png" alt="Caimán" width="150" height="150">
+
+    <img src="../assets/caimanRoom.png" alt="Caimán" width="150" height="150">
 
     <div v-if="username === 'admin'" class="question-section">
       <div class="enunciado">
         <p>{{ currentQuestion.question }}</p>
-      </div>  
+      </div>
       <div class="option-grid">
         <div v-for="(option, index) in currentQuestion.options" :key="index"
           :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
@@ -32,12 +33,13 @@
         <p>{{ currentQuestion.question }}</p>
       </div>
       <div class="button-grid">
-        <button v-for="(option, index) in currentQuestion.options" :key="index"
-          @click="selectOption(index)"
+        <button v-for="(option, index) in currentQuestion.options" :key="index" @click="selectOption(index)"
           :class="['option', getOptionClass(index), { selected: selectedOption === index }]">
-          Opción {{ index + 1 }}
+          
+          {{ option}}
         </button>
       </div>
+      <button class="action-button" @click="submitAnswer">Enviar respuesta</button>
     </div>
   </div>
 </template>
@@ -59,9 +61,10 @@ export default {
       currentQuestionIndex: 0,
       loading: true,
       error: null,
-      players: [], // Array para almacenar los jugadores conectados
-      logo: '../assets/logowaiting.png',
-      currentQuestion: { question: '', options: [], correctAnswer: 0},
+      playerAnswers: [],
+      players: [{ username: '', score: 0 }], // Array para almacenar los jugadores conectados
+      logo: '../assets/caimanRoom.png',
+      currentQuestion: { question: '', options: [], correctAnswer: 0 },
     };
   },
   async created() {
@@ -72,6 +75,21 @@ export default {
       this.currentQuestion = question;
     });
 
+    this.socket.on('new-answer', (data) => {
+      this.playerAnswers.push(data);
+      console.log('Respuestas de los jugadores:', this.playerAnswers);
+      
+    });
+
+    this.socket.on('resolve-results', (results) => {
+      // Aquí puedes mostrar los resultados o actualizar el estado de los jugadores
+      console.log('Resultados de la resolución:', results);
+    });
+
+    this.socket.on('redirect-to-trivia-room', () => {
+      this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
+    });
+
     try {
       const response = await fetch('http://localhost:8000/getQuestionsKahoot');
       if (!response.ok) {
@@ -79,7 +97,7 @@ export default {
       }
       const data = await response.json();
       this.questions = data.questions;
-      
+
       this.currentQuestion = this.questions[this.currentQuestionIndex];
     } catch (err) {
       console.error('Error al cargar las preguntas:', err);
@@ -105,6 +123,14 @@ export default {
       this.selectedOption = index;
     },
     next() {
+      if (this.currentQuestionIndex === this.questions.length - 1) {
+        // push al path TriviaRoom con el username y los players
+
+        this.socket.emit('redirect-to-trivia-room');
+
+      //  this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
+        return;
+      }
       this.currentQuestionIndex++;
       this.currentQuestion = this.questions[this.currentQuestionIndex];
       this.selectedOption = null;
@@ -117,58 +143,67 @@ export default {
         options[i].classList.remove('opcion-incorrecta');
       }
     },
-    async submitAnswer() {
+    submitAnswer() {
       if (this.selectedOption === null) {
         alert('Por favor selecciona una respuesta.');
         return;
       }
 
-      try {
-        const response = await fetch('/submit-answer', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ player: this.playerName, answer: this.options[this.selectedOption] }),
-        });
+      // Emitir la respuesta del jugador al servidor mediante sockets
+      this.socket.emit('submit-answer', {
+        player: this.username,
+        answer: this.selectedOption, // Restar 1 para que coincida con el índice de la respuesta correcta
+      });
 
-        const data = await response.json();
-        alert(data.message);
-      } catch (err) {
-        console.error('Error al enviar la respuesta:', err);
-      }
+      // Marcar la respuesta como enviada
+      alert(`Respuesta enviada con indice: ${this.selectedOption}`);
+      this.selectedOption = null;
+
     },
 
     getOptionClass(index) {
       const colors = ['blue', 'green', 'orange', 'yellow'];
       return colors[index] || '';
     },
-    resolver(){
+    resolver() {
       // haremos que cuando el admin presione el botón de resolver, la opcion de la respuesta correcta se pinte de verde y el resto de rojo
 
-      // recorremos las opciones
-      console.log('currentQuestion', this.currentQuestion);
-      
       this.currentQuestion.options.forEach((option, index) => {
         // si la opcion es la correcta
-        
-        console.log('opcion ', index, ' es correcta? ', (index+1) === this.currentQuestion.correctAnswer, " correcta: ", this.currentQuestion.correctAnswer);
-        if ((index+1) === this.currentQuestion.correctAnswer) {
+
+        if ((index) === this.currentQuestion.correctAnswer) {
           // pintamos la opcion de verde
           document.getElementsByClassName('option')[index].classList.add('opcion-correcta');
-          
-          
+
+
         } else {
           // pintamos el resto de opciones de rojo
           document.getElementsByClassName('option')[index].classList.add('opcion-incorrecta');
         }
       });
-     
-        
-      
 
+      // comprobar los players answers y actualizar los puntos de los jugadores
+      // por cada respuesta de los jugadores
+      this.playerAnswers.forEach((playerAnswer) => {
+        // si la respuesta del jugador es igual a la respuesta correcta
+        console.log('playerAnswer.answer', playerAnswer.answer);
+        console.log('this.currentQuestion.correctAnswer', this.currentQuestion.correctAnswer);
+        if (playerAnswer.answer === this.currentQuestion.correctAnswer) {
+          // sumamos un punto al jugador
+          this.players.forEach((player) => {
+            if (player.username === playerAnswer.player) {
+              player.score++;
+              console.log('player.score', player.score);
+            }else{
+              console.log('player.score', player.score);
+              
+            }
+          });
+        }
+      });
 
-
+      // limpiamos las respuestas de los jugadores
+      this.playerAnswers = [];
     }
   },
 };
@@ -194,13 +229,29 @@ export default {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  background-color: #28a745;
+  padding: 25px;
+  border-radius: 10px;
+  /* text white */
+  color: white;
+
 }
 
-.players{
+.players {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 1rem;
+}
+
+.player-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  /* bold */
+  font-weight: bold;
 }
 
 .player-info img {
@@ -300,6 +351,15 @@ export default {
   margin-top: 20%;
 }
 
+/* button grid al ser presionado */ 
+.button-grid button.selected {
+  background-color: pink;
+  border-color: black !important;
+}
+.button-grid:disabled {
+  background-color: grey;
+}
+
 button {
   padding: 50px;
   border-radius: 5px;
@@ -310,19 +370,23 @@ button {
 }
 
 .button-grid button:nth-child(1) {
-  background-color: #007bff; /* Azul */
+  background-color: #007bff;
+  /* Azul */
 }
 
 .button-grid button:nth-child(2) {
-  background-color: #28a745; /* Verde */
+  background-color: #28a745;
+  /* Verde */
 }
 
 .button-grid button:nth-child(3) {
-  background-color: #dc3545; /* Rojo */
+  background-color: #dc3545;
+  /* Rojo */
 }
 
 .button-grid button:nth-child(4) {
-  background-color: purple; /* Amarillo */
+  background-color: purple;
+  /* Amarillo */
 }
 
 .resolve-button {
@@ -337,7 +401,7 @@ button {
   font-size: 1rem;
   font-weight: bold;
   text-align: center;
-  
+
 }
 
 .next-button {
@@ -354,7 +418,8 @@ button {
   text-align: center;
 }
 
-.resolve-button:hover, .next-button:hover {
+.resolve-button:hover,
+.next-button:hover {
   background-color: green;
 }
 
@@ -365,6 +430,4 @@ button {
 .opcion-incorrecta {
   background-color: red;
 }
-
-
 </style>

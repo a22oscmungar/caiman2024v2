@@ -4,7 +4,7 @@
     <img src="../assets/logowaiting.png" alt="Caimán" width="200" height="200">
     <p>Jugadores conectados:</p>
     <ul>
-      <li v-for="player in filteredPlayers" :key="player">{{ player }}</li>
+      <li v-for="player in connectedPlayers" :key="player">{{ player.username }}</li>
     </ul>
     <div v-if="this.username == 'admin'">
       <button class="btnEmpezar" @click="startGame">Iniciar test</button>
@@ -22,7 +22,7 @@ import { io } from 'socket.io-client';
 export default {
   data() {
     return {
-      connectedPlayers: [], // Aquí se almacenarán los jugadores conectados
+      connectedPlayers: [{username:'',score:0}], // Aquí se almacenarán los jugadores conectados
       socket: null,
       username: '',
     };
@@ -60,6 +60,9 @@ export default {
       console.log(`${username} se ha desconectado`);
       this.connectedPlayers = this.connectedPlayers.filter(player => player !== username);
     });
+
+    console.log(this.connectedPlayers);
+    
   },
   methods: {
     async startGame() {
