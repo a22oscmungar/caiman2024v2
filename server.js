@@ -31,6 +31,8 @@ fs.readFile('questionsTrivia.json', 'utf8', (err, data) => {
         return;
     }
     questionsTrivia = JSON.parse(data);
+    //ahora mezclamos las preguntas
+    questionsTrivia = questionsTrivia.sort(() => Math.random() - 0.5);
 
 
 });
@@ -95,7 +97,6 @@ app.get('/getQuestionsKahoot', (req, res) => {
 
 app.get('/getQuestionsTrivia', (req, res) => {
     if (questionsTrivia && questionsTrivia.length > 0) {
-        questionsTrivia.sort = () => Math.random() - 0.5;
         res.json({ questions: questionsTrivia });
     } else {
         res.status(404).json({ error: 'No se encontraron preguntas' });
@@ -187,6 +188,14 @@ io.on('connection', (socket) => {
     //socket para redigiar a los usuarios a trivia-room
     socket.on('redirect-to-trivia-room', () => {
         io.emit('redirect-to-trivia-room');
+    });
+
+    socket.on('nuevo-turno',(turno) =>{
+        io.emit('nuevo-turno', turno);
+    })
+
+    socket.on('nueva-pregunta', (pregunta) => {
+        io.emit('nueva-pregunta', pregunta);
     });
 });
 

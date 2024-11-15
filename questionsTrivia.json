@@ -4,182 +4,255 @@
         "id" : 1,
         "question": "¿Cuándo es el cumpleaños de Aitor?",
         "options": ["15 de febrero", "5 de enero", "8 de marzo", "23 de marzo"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Aitor"]
     },
     {
         "id" : 2,
         "question": "¿Cuándo es el cumpleaños de Oscar?",
         "options": ["20 de agosto", "5 de enero", "8 de marzo", "23 de marzo"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Oscar"]
     },
     {
         "id" : 3,
         "question": "¿Cuándo es el cumpleaños de Javier?",
         "options": ["20 de agosto", "28 de mayo", "8 de marzo", "23 de marzo"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Javier"]
     },
     {
         "id" : 4,
         "question": "¿Cuándo es el cumpleaños de Manel?",
         "options": ["20 de agosto", "28 de mayo", "8 de marzo", "14 de julio"],
-        "correctAnswer": 3
+        "correctAnswer": 3,
+        "about": ["Manel"]
     },
     {
         "id" : 5,
         "question": "¿Cuándo es el cumpleaños de Noa?",
         "options": ["5 de enero", "28 de mayo", "8 de marzo", "23 de marzo"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Noa"]
     },
     {
         "id" : 6,
         "question": "¿Cuándo es el cumpleaños de Carla?",
         "options": ["5", "28 de mayo", "8 de marzo", "9 de julio"],
-        "correctAnswer": 3
+        "correctAnswer": 3,
+        "about": ["Carla"]
     },
     {
         "id" : 7,
         "question": "¿Cuándo es el cumpleaños de Marcos?",
         "options": ["5", "9 de abril", "8 de marzo", "9 de julio"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Marcos"]
     },
     {
         "id" : 8,
         "question": "¿Cuándo es el cumpleaños de Ana?",
         "options": ["31 de julio", "9 de abril", "8 de marzo", "9 de julio"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Ana"]
     },
     {
         "id" : 9,
         "question": "¿Que Grado Superior ha estudiado Manel?",
         "options": ["Administrativo", "Marketing", "Dirección de empresas", "Desarrollo de sistemas"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Manel"]
     },
     {
         "id" : 10,
         "question": "¿Como se llama la empresa donde trabaja Oscar?",
         "options": ["Grupo Hiemesa", "Hierros Viladecavalls", "Hierros Molina", "Grupos Acemar"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Oscar"]
     },
     {
         "id" : 11,
         "question": "¿Como se llama el grupo de hoteles donde trabaja Manel?",
         "options": ["Vela", "Hilton", "Marina d'Or", "H10"],
-        "correctAnswer": 3
+        "correctAnswer": 3,
+        "about": ["Manel"]
     },
     {
         "id" : 12,
         "question": "¿Cual es la flor favorita de Carla?",
         "options": ["Tulipanes amarillos", "Rosas negras", "Flor de loto", "Lirios azules"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Carla"]
     },
     {
         "id" : 13,
         "question": "¿Cual es la flor favorita de Oscar?",
         "options": ["Lirios", "Rosa", "Girasol", "Flor del dragón"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Oscar"]
     },
     {
         "id" : 14,
         "question": "¿Cuantos tatuajes tiene Oscar actualmente?",
         "options": ["26", "15", "30", "32"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Oscar"]
     },
     {
         "id" : 15,
         "question": "¿Como se llama la psicologa de Oscar y Noa?",
         "options": ["Sara", "Paula", "Mireia", "Andrea"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Oscar", "Noa"]
     },    
     {
         "id" : 16,
         "question": "¿Como se llaman los padres de Marcos?",
         "options": ["Julian y Montse", "Jorge y Marisol", "Jose y Laura", "Jose y Montse"],
-        "correctAnswer": 3
+        "correctAnswer": 3,
+        "about": ["Marcos"]
     },
     {
         "id" : 17,
         "question": "¿A que discoteca quiere ir Javier?",
         "options": ["Sokko", "Malalts", "Ushuaia", "Pachá"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Javier"]
     },
     {
         "id" : 18,
         "question": "¿Cual es uno de los artistas favoritos de Ana?",
         "options": ["Walls", "Duki", "Milo J", "Wos"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Ana"]
     },
     {
         "id" : 19,
         "question": "¿Cual es el color favorito de Noa?",
         "options": ["Rojo", "Rosa", "Morado", "Salmón"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Noa"]
     },
     {
         "id" : 20,
         "question": "¿Que carrera ha estudiado Ana?",
         "options": ["Filologia clásica", "Ciencias de la antiguedad", "Filologia hispánica", "Humanidades"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Ana"]
     },
     {
         "id" : 21,
         "question": "¿Cual es el artista favorito de Oscar?",
         "options": ["Duki", "Kaze", "Walls", "Milo J"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Oscar"]
     },
     {
         "id" : 22,
         "question": "¿Que deporte practicaron juntos Marcos y Javier en su infancia?",
         "options": ["Baloncesto", "Tenis", "Golf", "Futbol"],
-        "correctAnswer": 3
+        "correctAnswer": 3,
+        "about": ["Marcos", "Javier"]
     },
     {
         "id" : 23,
         "question": "¿Cual es la frase estrella de Marcos?",
         "options": ["Me duele...", "¿Pero tu sabes...?", "Tienes razón", "Que fácil es..."],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Marcos"]
     },
     {
         "id" : 24,
         "question": "¿Cuales son los apellidos de Carla?",
         "options": ["Pedrajas Martinez", "Pedrajas Muñoz", "Pedrajas Moreno", "Pedrajas Mendez"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Carla"]
     },
     {
         "id" : 25,
         "question": "¿Cuales son los apellidos de Manel?",
         "options": ["Alvarez Frias", "Alvarez Rodriguez", "Alvarez Diaz", "Alvarez Hernandez"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Manel"]
     },
     {
         "id" : 26,
         "question": "¿Cuales son los apellidos de Ana?",
         "options": ["Delgado Montes", "Montes Delgado", "Martinez Delgado", "Delgado Montes"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Ana"]
     },
     {
         "id" : 27,
         "question": "¿Que grado universitario estudió Marcos?",
         "options": ["Derecho", "Administración de empresas", "Criminologia", "Economia"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Marcos"]
     },
     {
         "id" : 28,
         "question": "¿Cual de estos trabajos NO ha tenido Aitor?",
         "options": ["Carpintero", "Mozo de almacen", "Mecánico", "Soldador"],
-        "correctAnswer": 2
+        "correctAnswer": 2,
+        "about": ["Aitor"]
     },
     {
         "id" : 29,
         "question": "¿Cual NO es el nombre de una mascota que haya tenido Aitor?",
         "options": ["Blanca", "Duque", "Lila", "Hannah"],
-        "correctAnswer": 0
+        "correctAnswer": 0,
+        "about": ["Aitor"]
     },
     {
         "id" : 30,
         "question": "¿Donde trabajo Aitor en epoca de COVID mayoritariamente?",
         "options": ["Nissan", "SEAT", "McDonalds", "Decathlon"],
-        "correctAnswer": 1
+        "correctAnswer": 1,
+        "about": ["Aitor"]
+    },
+    {
+        "id" : 31,
+        "question": "¿Cual de estos deportes le gusta mas a Aitor?",
+        "options": ["Golf", "Baloncesto", "Boxeo", "Ping Pong"],
+        "correctAnswer": 2,
+        "about": ["Aitor"]
+    },
+    {
+        "id" : 32,
+        "question": "¿Videojuego al que mas ha jugado Ana?",
+        "options": ["Valorant", "TFT", "Fortnite", "Tetris"],
+        "correctAnswer": 0,
+        "about": ["Ana"]
+    },
+    {
+        "id" : 33,
+        "question": "¿Donde han estudiado Carla y Noa?",
+        "options": ["Universidad de Barcelona", "UAB", "San Juan de Dios", "Bellvitge"],
+        "correctAnswer": 2,
+        "about": ["Carla", "Noa"]
+    },
+    {
+        "id" : 34,
+        "question": "¿Cual es uno de los animes preferidos de Marcos?",
+        "options": ["Attack on Titans", "SAO", "Naruto", "Dragon Ball"],
+        "correctAnswer": 1,
+        "about": ["Marcos"]
+    },
+    {
+        "id" : 35,
+        "question": "¿Cual es el escritor favorito de Oscar?",
+        "options": ["Edgar Allan Poe", "Brandon Sanderson", "Juan Gomez-Jurado", "Albert Espinosa"],
+        "correctAnswer": 3,
+        "about": ["Oscar"]
+    },
+    {
+        "id" : 36,
+        "question": "¿Cual de estas cantantes ama Manel?",
+        "options": ["Cristina Aguilera", "Brandon Sanderson", "Juan Gomez-Jurado", "Albert Espinosa"],
+        "correctAnswer": 3,
+        "about": ["Oscar"]
     }
+    
 
     
 

@@ -18,37 +18,39 @@
 
       <div class="question-section">
         <div class="enunciado">
-        <p>{{ currentQuestion.question }}</p>
-      </div>
-      <div class="option-grid">
-        <div v-for="(option, index) in currentQuestion.options" :key="index"
-          :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
-          @click="selectOption(index)">
-          {{ option }}
+          <p>{{ currentQuestion.question }}</p>
+        </div>
+        <div class="option-grid">
+          <div v-for="(option, index) in currentQuestion.options" :key="index"
+            :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
+            @click="selectOption(index)">
+            {{ option }}
+          </div>
         </div>
       </div>
-      </div>
-      
+
       <button class="resolve-button" @click="resolver()">RESOLVER</button>
-      <button class="next-button" @click="next()">SIGUIENTE PREGUNTA</button>
+      <button class="next-button" @click="siguientePregunta()">SIGUIENTE PREGUNTA</button>
     </div>
 
   </div>
 
   <div v-if="turno === this.username">
     <div class="option-grid">
-        <div v-for="(option, index) in currentQuestion.options" :key="index"
-          :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
-          @click="selectOption(index)">
-          {{ option }}
-        </div>
+      <div v-for="(option, index) in currentQuestion.options" :key="index"
+        :class="['option', getOptionClass(index), { selected: selectedOption === index }]" @click="selectOption(index)">
+        {{ option }}
       </div>
+    </div>
+    <button class="action-button" @click="submitAnswer">Enviar respuesta</button>
   </div>
 
 
 </template>
 
 <script>
+import { io } from 'socket.io-client';
+
 export default {
   data() {
     return {
@@ -61,10 +63,12 @@ export default {
       currentQuestion: { question: '', options: [], correctAnswer: 0 },
       selectedAnswer: null,
       turnoIndex: 0,
-      turno: "Noa",
+      turno: '',
     };
   },
   async created() {
+    this.socket = io(); // Conectar al servidor
+
 
     try {
       const response = await fetch('http://localhost:8000/getPlayers');
@@ -89,8 +93,7 @@ export default {
       //las preguntas estaran en orden aleatirio
 
       this.questions = data.questions;
-
-
+      console.log('Preguntas:' , this.questions);
 
       this.currentQuestion = this.questions[this.currentQuestionIndex];
     } catch (err) {
@@ -98,13 +101,86 @@ export default {
       this.error = 'Error al obtener las preguntas. Intente de nuevo más tarde.';
       this.loading = false;
     }
+
+    this.socket.on('nuevo-turno', (turno) => {
+      this.turno = turno;
+    });
+
+    this.socket.on('nueva-pregunta', (pregunta) => {
+      this.currentQuestion = pregunta;
+    });
   },
-  methods:{
-    
+  methods: {
+
     getOptionClass(index) {
       const colors = ['blue', 'green', 'orange', 'yellow'];
       return colors[index] || '';
     },
+    elegirJugador() {
+      this.turnoIndex++;
+      if (this.turnoIndex === this.players.length) {
+        this.turnoIndex = 0;
+      }
+      this.turno = this.players[this.turnoIndex].username;
+
+      this.socket.emit('nuevo-turno', this.turno);
+    },
+    selectOption(index) {
+      this.selectedOption = index;
+    },
+    siguientePregunta() {
+      this.elegirJugador();
+      // Elimina la pregunta actual
+      this.currentQuestionIndex = 0;
+
+      this.questions.splice(this.currentQuestionIndex, 1);
+
+      // Bucle para encontrar una pregunta válida para el jugador en turno
+      while (this.questions.length > 0) {
+        // Asigna la primera pregunta como candidata
+        this.currentQuestion = this.questions[this.currentQuestionIndex];
+
+        // Verifica si el turno del jugador está en el campo 'about' de la pregunta
+        if (!this.currentQuestion.about || !this.currentQuestion.about.includes(this.turno)) {
+          // Si no está en el 'about', es válida, así que se sale del bucle
+          break;
+        }
+
+        // Si está en el 'about', elimina la pregunta actual y sigue buscando
+        this.currentQuestionIndex++;
+      }
+
+      // Reinicia el índice si llega al final del array
+      if (this.currentQuestionIndex >= this.questions.length) {
+        this.currentQuestionIndex = 0;
+      }
+
+      // Si no quedan preguntas válidas, muestra mensaje de finalización
+      if (this.questions.length === 0) {
+        this.currentQuestion = null;
+        console.log("No hay más preguntas disponibles.");
+      }
+
+      // Emitir la pregunta actual al servidor mediante sockets
+      this.socket.emit('nueva-pregunta', this.currentQuestion);
+    },
+    submitAnswer() {
+      if (this.selectedOption === null) {
+        alert('Por favor selecciona una respuesta.');
+        return;
+      }
+
+      // Emitir la respuesta del jugador al servidor mediante sockets
+      this.socket.emit('submit-answer', {
+        player: this.username,
+        answer: this.selectedOption, // Restar 1 para que coincida con el índice de la respuesta correcta
+      });
+
+      // Marcar la respuesta como enviada
+      alert(`Respuesta enviada con indice: ${this.selectedOption}`);
+      this.selectedOption = null;
+
+    }
   }
 };
 </script>
