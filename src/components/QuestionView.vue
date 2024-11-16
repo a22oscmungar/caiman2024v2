@@ -1,7 +1,23 @@
 <template>
   <div class="question-view">
+    <div class="CosasAdmin">
+
+    <button v-if="username === 'admin'" @click="openScoreModal" class="btnAjustar">Ajustes de cuentas</button>
+    <div v-if="showScoreModal" class="modal-overlay">
+      <div class="modal">
+        <div v-for="(player, index) in players" :key="index" class="player-row">
+          <p>{{ player.username }}</p>
+          <div class="buttons">
+            <button @click="adjustScore(player, 1)">+</button>
+            <button @click="adjustScore(player, -1)">-</button>
+          </div>
+          <p>Puntuación: {{ player.score }}</p>
+        </div>
+        <button class="close-button" @click="closeScoreModal">Cerrar</button>
+      </div>
+    </div>
+
     <div v-if="username === 'admin'" class="player-info">
-      <b>Puntuaciones:</b> <br>
       <div class="players">
         <div v-for="(player, index) in players" :key="index" class="player-details">
 
@@ -10,8 +26,11 @@
         </div>
       </div>
     </div>
-
+    
     <img src="../assets/caimanRoom.png" alt="Caimán" width="150" height="150">
+    </div>
+    
+
 
     <div v-if="username === 'admin'" class="question-section">
       <div class="enunciado">
@@ -62,6 +81,7 @@ export default {
       loading: true,
       error: null,
       playerAnswers: [],
+      showScoreModal: false, // Estado del modal
       players: [{ username: '', score: 0 }], // Array para almacenar los jugadores conectados
       logo: '../assets/caimanRoom.png',
       currentQuestion: { question: '', options: [], correctAnswer: 0 },
@@ -126,6 +146,18 @@ export default {
   methods: {
     selectOption(index) {
       this.selectedOption = index;
+    },
+    openScoreModal() {
+      this.showScoreModal = true;
+    },
+    closeScoreModal() {
+      this.showScoreModal = false;
+    },
+    adjustScore(player,delta){
+      player.score += delta;
+      if(player.score < 0){
+        player.score = 0;
+      }
     },
     async next() {
       if (this.currentQuestionIndex === this.questions.length - 1) {
@@ -226,6 +258,59 @@ export default {
 
 
 <style scoped>
+
+.btnAjustar{
+  background-color: #2a6b2c;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.CosasAdmin{
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 300px;
+  max-height: 90%;
+  overflow-y: auto;
+  text-align: center;
+}
+
+
+.close-button {
+  margin-top: 10px;
+  background: red;
+  color: white;
+}
+
 .question-view {
   display: flex;
   flex-direction: column;
@@ -242,14 +327,12 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  background-color: #28a745;
-  padding: 25px;
-  border-radius: 10px;
+  text-align: center;
+  background-color: #2a6b2c;
+  padding: 15px 32px;
+  border-radius: 5px;
   /* text white */
   color: white;
-
 }
 
 .players {
@@ -263,17 +346,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
   text-align: center;
   /* bold */
   font-weight: bold;
-}
-
-.player-info img {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  border-radius: 50%;
 }
 
 .question-section {
@@ -304,6 +379,14 @@ export default {
   color: white;
   font-size: 1rem;
   font-weight: bold;
+}
+
+.player-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
 }
 
 .blue {
@@ -446,4 +529,7 @@ button {
 .opcion-incorrecta {
   background-color: red;
 }
+
+
+
 </style>

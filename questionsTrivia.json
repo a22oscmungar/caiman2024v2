@@ -248,9 +248,135 @@
     {
         "id" : 36,
         "question": "¿Cual de estas cantantes ama Manel?",
-        "options": ["Cristina Aguilera", "Brandon Sanderson", "Juan Gomez-Jurado", "Albert Espinosa"],
+        "options": ["Cristina Aguilera", "Ariana Grande", "Sabrina Carpenter", "Lana del Rey"],
+        "correctAnswer": 2,
+        "about": ["Manel"]
+    },
+    {
+        "id" : 37,
+        "question": "A causa de Gonxito, ¿que quiere comprar Javier?",
+        "options": ["Avioneta", "PS5", "Scalestrix", "Barco"],
+        "correctAnswer": 3,
+        "about": ["Javier"]
+    },
+    {
+        "id" : 38,
+        "question": "¿Quien de estos no es amigx de Javier (conocido por el resto)?",
+        "options": ["Pau", "Jordi", "Paula", "Quim"],
+        "correctAnswer": 1,
+        "about": ["Javier"]
+    },
+    {
+        "id" : 39,
+        "question": "¿Como se llama la 'amiguita' de Noa?",
+        "options": ["Virginia", "Paula", "Marta", "Sofia"],
+        "correctAnswer": 0,
+        "about": ["Noa"]
+    },
+    {
+        "id" : 40,
+        "question": "Nombre del actor al que Carla adora especialmente",
+        "options": ["Antonio Banderas", "Mario Casas", "Alvaro Morte", "Maxi Iglesias"],
+        "correctAnswer": 2,
+        "about": ["Carla"]
+    },
+    {
+        "id" : 41,
+        "question": "¿De que serie tiene Aitor un tatuaje?",
+        "options": ["Dragon Ball", "One Piece", "La casa de papel", "Naruto"],
+        "correctAnswer": 1,
+        "about": ["Aitor"]
+    },
+    {
+        "id" : 42,
+        "question": "¿Que modelo de avioneta quiere Javier?",
+        "options": ["Aerospool wt9", "Flight Design CTLS", "Tecnam P2002 Sierra", "Pipistrel Virus SW"],
+        "correctAnswer": 0,
+        "about": ["Javier"]
+    },
+    {
+        "id" : 43,
+        "question": "¿Quien dijo la frase 'Como Gengis Khan, Kurt Cobain y el coletas, les diré a mis hijos que esos eran los tres reyes magos'?",
+        "options": ["Aitor", "Noa", "Manel", "Oscar"],
         "correctAnswer": 3,
         "about": ["Oscar"]
+    },
+    {
+        "id" : 44,
+        "question": "¿Cual de estos instrumentos toca Noa a buen nivel?",
+        "options": ["Flauta", "Violin", "Piano", "Bateria"],
+        "correctAnswer": 2,
+        "about": ["Noa"]
+    },
+    {
+        "id" : 45,
+        "question": "Pais de procedencia de los compañeros de trabajo de Ana a los que Aitor no tiene mucho cariño",
+        "options": ["Mexico", "Argentina", "España", "Perú"],
+        "correctAnswer": 1,
+        "about": ["Ana"]
+    },
+    {
+        "id" : 46,
+        "question": "Carla compró la camiseta de este personaje de Cars",
+        "options": ["Sally", "Mate", "Rayo McQueen", "Guido"],
+        "correctAnswer": 0,
+        "about": ["Carla"]
+    },
+    {
+        "id" : 47,
+        "question": "Numero de la casa en la que vive Manel",
+        "options": ["10", "12", "14", "16"],
+        "correctAnswer": 3,
+        "about": ["Manel"]
+    },
+    {
+        "id" : 48,
+        "question": "Numero de la casa en la que vive Javier",
+        "options": ["73", "71", "69", "65"],
+        "correctAnswer": 0,
+        "about": ["Javier"]
+    },
+    {
+        "id" : 49,
+        "question": "Numero de la casa en la que vive Marcos",
+        "options": ["63", "65", "67", "69"],
+        "correctAnswer": 1,
+        "about": ["Marcos"]
+    },
+    {
+        "id" : 49,
+        "question": "¿Como se llama el hermano de Noa?",
+        "options": ["Alex", "Nil", "Ari", "Pau"],
+        "correctAnswer": 2,
+        "about": ["Noa"]
+    },
+    {
+        "id" : 50,
+        "question": "¿Con que nombre de usuario conocimos muchos a Ana?",
+        "options": ["AnitaPanda", "aaaaniiiitaaaa", "LaAnaMontes", "AnitaDimanita"],
+        "correctAnswer": 0,
+        "about": ["Ana"]
+    },
+    {
+        "id" : 51,
+        "question": "¿De cuantos gatos dispone Manel?",
+        "options": ["1", "2", "3", "4"],
+        "correctAnswer": 2,
+        "about": ["Manel"]
+    },
+    {
+        "id" : 52,
+        "question": "¿En que año nació Carla?",
+        "options": ["2000", "2001", "2002", "2003"],
+        "correctAnswer": 2,
+        "about": ["Carla"]
+    },
+    {
+        "id" : 53,
+        "question": "¿Que bebida acostumbra a pedir Aitor en los bares?",
+        "options": ["Cocacola", "Nestea", "Fanta de Limón", "Fanta de Naranja"],
+        "correctAnswer": 1,
+        "about": ["Aitor"]
     }
     
 

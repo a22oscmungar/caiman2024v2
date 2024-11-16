@@ -1,29 +1,44 @@
 <template>
   <div class="trivia-room">
 
-    <div v-if="username === 'admin'" class="player-info">
-      <b>Puntuaciones:</b> <br>
-      <div class="players">
-        <div v-for="(player, index) in players" :key="index" class="player-details">
+    <div class="CosasAdmin">
+      <button v-if="username === 'admin'" @click="openScoreModal" class="btnAjustar">Ajustes de cuentas</button>
+      <div v-if="showScoreModal" class="modal-overlay">
+        <div class="modal">
+          <div v-for="(player, index) in players" :key="index" class="player-row">
+            <p>{{ player.username }}</p>
+            <div class="buttons">
+              <button @click="adjustScore(player, 1)" class="btnSuma">+</button>
+              <button @click="adjustScore(player, -1)" class="btnResta">-</button>
+            </div>
+            <p>Puntuación: {{ player.score }}</p>
+          </div>
+          <button class="close-button" @click="closeScoreModal">Cerrar</button>
+        </div>
+      </div>
+      <div v-if="username === 'admin'" class="player-info">
+        <div class="players">
+          <div v-for="(player, index) in players" :key="index" class="player-details">
 
-          <p>{{ player.username }}</p>
-          <p>{{ player.score }}</p>
+            <p>{{ player.username }}</p>
+            <p>{{ player.score }}</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div v-if="username === 'admin'">
-      <b>Turno de:</b> <br>
-      <p>{{ turno }}</p>
-
-      <div class="question-section">
+    <div v-if="username === 'admin'" class="question-section">
+      <div>
+        <div class="turno">
+          <b>Turno de:</b> <br>
+          <p>{{ turno }}</p>
+        </div>
         <div class="enunciado">
           <p>{{ currentQuestion.question }}</p>
         </div>
         <div class="option-grid">
           <div v-for="(option, index) in currentQuestion.options" :key="index"
-            :class="['option', getOptionClass(index), { selected: selectedOption === index }]"
-            @click="selectOption(index)">
+            :class="['option', getOptionClass(index), { selected: selectedOption === index }]">
             {{ option }}
           </div>
         </div>
@@ -35,7 +50,7 @@
 
   </div>
 
-  <div v-if="turno === this.username">
+  <div v-if="turno === this.username" class="user">
     <div class="option-grid">
       <div v-for="(option, index) in currentQuestion.options" :key="index"
         :class="['option', getOptionClass(index), { selected: selectedOption === index }]" @click="selectOption(index)">
@@ -64,6 +79,8 @@ export default {
       selectedAnswer: null,
       turnoIndex: 0,
       turno: '',
+      showScoreModal: false,
+      playerAnswers: [],
     };
   },
   async created() {
@@ -93,7 +110,7 @@ export default {
       //las preguntas estaran en orden aleatirio
 
       this.questions = data.questions;
-      console.log('Preguntas:' , this.questions);
+      console.log('Preguntas:', this.questions);
 
       this.currentQuestion = this.questions[this.currentQuestionIndex];
     } catch (err) {
@@ -109,6 +126,14 @@ export default {
     this.socket.on('nueva-pregunta', (pregunta) => {
       this.currentQuestion = pregunta;
     });
+
+    this.socket.on('new-answer', (data) => {
+      this.playerAnswers.push(data);
+      console.log('Respuestas de los jugadores:', this.playerAnswers);
+
+    });
+
+
   },
   methods: {
 
@@ -124,6 +149,18 @@ export default {
       this.turno = this.players[this.turnoIndex].username;
 
       this.socket.emit('nuevo-turno', this.turno);
+    },
+    openScoreModal() {
+      this.showScoreModal = true;
+    },
+    closeScoreModal() {
+      this.showScoreModal = false;
+    },
+    adjustScore(player,delta){
+      player.score += delta;
+      if(player.score < 0){
+        player.score = 0;
+      }
     },
     selectOption(index) {
       this.selectedOption = index;
@@ -163,6 +200,14 @@ export default {
 
       // Emitir la pregunta actual al servidor mediante sockets
       this.socket.emit('nueva-pregunta', this.currentQuestion);
+
+      // Limpiar las clases de las opciones
+      const options = document.getElementsByClassName('option');
+      for (let i = 0; i < options.length; i++) {
+        options[i].classList.remove('opcion-correcta');
+        options[i].classList.remove('opcion-incorrecta');
+      }
+
     },
     submitAnswer() {
       if (this.selectedOption === null) {
@@ -180,40 +225,172 @@ export default {
       alert(`Respuesta enviada con indice: ${this.selectedOption}`);
       this.selectedOption = null;
 
+    }, resolver() {
+      // haremos que cuando el admin presione el botón de resolver, la opcion de la respuesta correcta se pinte de verde y el resto de rojo
+
+      this.currentQuestion.options.forEach((option, index) => {
+        // si la opcion es la correcta
+
+        if ((index) === this.currentQuestion.correctAnswer) {
+          // pintamos la opcion de verde
+          document.getElementsByClassName('option')[index].classList.add('opcion-correcta');
+
+        } else {
+          // pintamos el resto de opciones de rojo
+          document.getElementsByClassName('option')[index].classList.add('opcion-incorrecta');
+        }
+      });
+
+      // comprobar los players answers y actualizar los puntos de los jugadores
+      // por cada respuesta de los jugadores
+      this.playerAnswers.forEach((playerAnswer) => {
+        // si la respuesta del jugador es igual a la respuesta correcta
+        if (playerAnswer.answer === this.currentQuestion.correctAnswer) {
+          // sumamos un punto al jugador
+          this.players.forEach((player) => {
+            if (player.username === playerAnswer.player) {
+              player.score++;
+              console.log('player.score', player.score);
+            } else {
+              console.log('player.score', player.score);
+
+            }
+          });
+        }
+      });
+
+      // limpiamos las respuestas de los jugadores
+      this.playerAnswers = [];
     }
   }
 };
 </script>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  display: flex;
+  flex-direction: row;
+  background: white;
+  gap: 1rem;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  text-align: center;
+}
+
+.btnAjustar {
+  background-color: #2a6b2c;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-button {
+  background: red;
+  color: white;
+}
+
+.btnSuma {
+  background-color: #28a745;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btnResta {
+  background-color: #dc3545;
+  /* Red */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
 .trivia-room {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.CosasAdmin {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.user{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .player-info {
   margin-top: 20px;
-  background-color: #28a745;
-  padding: 25px;
+  background-color: #2a6b2c;
   border-radius: 10px;
   color: white;
 }
 
+.turno {
+  margin-top: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+}
+
 .players {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 1rem;
 }
 
 .player-details {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
   text-align: center;
   font-weight: bold;
+  padding: 25px;
 }
 
 .question-view {
@@ -231,21 +408,30 @@ export default {
 
 .question-section {
   background-color: white;
-  padding: 80px;
+  padding: 25px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 50%;
   align-items: center;
   text-align: center;
   overflow: hidden;
+  height: 50%;
 }
 
 .option-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  width: 100%;
-  margin: 20px 0;
+  width: 80%;
+  margin: 20px 50px 20px 50px;
+}
+
+.player-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
 }
 
 .option {
@@ -280,10 +466,10 @@ export default {
   border: none;
   color: white;
   padding: 10px;
-  margin: 10px 0;
+  margin: 50px 50px 50px 50px;
   cursor: pointer;
   border-radius: 5px;
-  width: 100%;
+  width: 80%;
   font-size: 1rem;
   font-weight: bold;
   text-align: center;

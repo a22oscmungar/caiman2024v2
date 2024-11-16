@@ -125,6 +125,31 @@ app.get('/getPlayers', (req, res) => {
     res.json({ players });
 });
 
+//ruta para obtener cuantas preguntas hay en el questions Trivia que tengas cada nombre en el About de "Aitor","Javier","Manel","Ana", "Oscar", "Noa", "Marcos" y "Carla"
+app.get('/getQuestionsCount', (req, res) => {
+    const questionsCount = {
+        Aitor: 0,
+        Javier: 0,
+        Noa: 0,
+        Ana: 0,
+        Oscar: 0,
+        Marcos: 0,
+        Carla: 0,
+        Manel: 0
+    };
+
+    //about es una array con strings, quiero que sume 1 a cada nombre que haya en el array
+
+    questionsTrivia.forEach(question => {
+        question.about.forEach(name => {
+            if (questionsCount[name] !== undefined) {
+                questionsCount[name]++;
+            }
+        });
+    }
+    );
+    res.json(questionsCount);
+});
 
 
 io.on('connection', (socket) => {
