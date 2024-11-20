@@ -1,5 +1,40 @@
 <template>
   <div class="waiting-room">
+    <div v-if="this.username === 'Marcos'">
+      <p>¡Bienvenido Marcos!</p>
+      <img src="../assets/perfiles/marcos.png" alt="Marcos" width="100" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Aitor'">
+      <p>¡Bienvenido Aitor!</p>
+      <img src="../assets/perfiles/aitor.png" alt="Aitor" width="140" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Javier'">
+      <p>¡Bienvenido Javier!</p>
+      <img src="../assets/perfiles/javier.png" alt="Javier" width="100" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Ana'">
+      <p>¡Bienvenida Ana!</p>
+      <img src="../assets/perfiles/ana.png" alt="Ana" width="100" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Carla'">
+      <p>¡Bienvenida Carla!</p>
+      <img src="../assets/perfiles/carla.png" alt="Carla" width="100" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Noa'">
+      <p>¡Bienvenida Noa!</p>
+      <img src="../assets/perfiles/noa.png" alt="Noa" width="100" height="100"/>
+    </div>
+
+    <div v-if="this.username === 'Manel'">
+      <p>¡Bienvenido Manel!</p>
+      <img src="../assets/perfiles/manel.png" alt="Manel" width="100" height="100"/>
+    </div>
+
     <h2>Sala de Espera</h2>
     <img src="../assets/logowaiting.png" alt="Caimán" width="200" height="200">
     <p>Jugadores conectados:</p>
@@ -13,6 +48,7 @@
       <p>Esperando a que el caimán inicie el test...</p>
     </div>
 
+    
   </div>
 </template>
 
@@ -99,8 +135,7 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 20px;
-  background-color: #f4f4f4;
+  background-color:bisque ; 
   text-align: center;
 }
 

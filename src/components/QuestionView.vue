@@ -4,18 +4,18 @@
 
     <button v-if="username === 'admin'" @click="openScoreModal" class="btnAjustar">Ajustes de cuentas</button>
     <div v-if="showScoreModal" class="modal-overlay">
-      <div class="modal">
-        <div v-for="(player, index) in players" :key="index" class="player-row">
-          <p>{{ player.username }}</p>
-          <div class="buttons">
-            <button @click="adjustScore(player, 1)">+</button>
-            <button @click="adjustScore(player, -1)">-</button>
+        <div class="modal">
+          <div v-for="(player, index) in players" :key="index" class="player-row">
+            <p>{{ player.username }}</p>
+            <div class="buttons">
+              <button @click="adjustScore(player, 0.1)" class="btnSuma">+</button>
+              <button @click="adjustScore(player, -0.1)" class="btnResta">-</button>
+            </div>
+            <p>Puntuación: {{ player.score }}</p>
           </div>
-          <p>Puntuación: {{ player.score }}</p>
+          <button class="close-button" @click="closeScoreModal">Cerrar</button>
         </div>
-        <button class="close-button" @click="closeScoreModal">Cerrar</button>
       </div>
-    </div>
 
     <div v-if="username === 'admin'" class="player-info">
       <div class="players">
@@ -28,13 +28,14 @@
     </div>
     
     <img src="../assets/caimanRoom.png" alt="Caimán" width="150" height="150">
+    
     </div>
     
 
 
     <div v-if="username === 'admin'" class="question-section">
       <div class="enunciado">
-        <p>{{ currentQuestion.question }}</p>
+        <p> {{ currentQuestion.id }} . {{ currentQuestion.question }}</p>
       </div>
       <div class="option-grid">
         <div v-for="(option, index) in currentQuestion.options" :key="index"
@@ -49,7 +50,7 @@
 
     <div v-else class="player-buttons">
       <div class="preguntaUsuario">
-        <p>{{ currentQuestion.question }}</p>
+        <p> {{ currentQuestion.id }} . {{ currentQuestion.question }}</p>
       </div>
       <div class="button-grid">
         <button v-for="(option, index) in currentQuestion.options" :key="index" @click="selectOption(index)"
@@ -98,6 +99,7 @@ export default {
     this.socket.on('new-answer', (data) => {
       this.playerAnswers.push(data);
       console.log('Respuestas de los jugadores:', this.playerAnswers);
+      
 
     });
 
@@ -202,8 +204,9 @@ export default {
         answer: this.selectedOption, // Restar 1 para que coincida con el índice de la respuesta correcta
       });
 
-      // Marcar la respuesta como enviada
-      alert(`Respuesta enviada con indice: ${this.selectedOption}`);
+      // Marcar la respuesta como enviada y mostrar el texto de la respuesta
+      alert(`Respuesta enviada: ${this.currentQuestion.options[this.selectedOption]}`);
+      // bloqueamos el boton de enviar
       this.selectedOption = null;
 
     },
@@ -239,11 +242,10 @@ export default {
           // sumamos un punto al jugador
           this.players.forEach((player) => {
             if (player.username === playerAnswer.player) {
-              player.score++;
-              console.log('player.score', player.score);
+              player.score = player.score + 0.1;
             } else {
-              console.log('player.score', player.score);
-
+              console.log('No se ha encontrado el jugador');
+              
             }
           });
         }
@@ -259,9 +261,70 @@ export default {
 
 <style scoped>
 
-.btnAjustar{
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  gap: 1rem;
+}
+
+.modal {
+  display: flex;
+  flex-direction: row;
+  background: white;
+  gap: 1rem;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  text-align: center;
+}
+
+.btnAjustar {
   background-color: #2a6b2c;
   /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-button {
+  background: red;
+  color: white;
+}
+
+.btnSuma {
+  background-color: #28a745;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btnResta {
+  background-color: #dc3545;
+  /* Red */
   border: none;
   color: white;
   padding: 15px 32px;
@@ -280,44 +343,13 @@ export default {
   gap: 3rem;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  width: 300px;
-  max-height: 90%;
-  overflow-y: auto;
-  text-align: center;
-}
-
-
-.close-button {
-  margin-top: 10px;
-  background: red;
-  color: white;
-}
-
 .question-view {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background-color: antiquewhite;
+  background-color:bisque ; 
   height: 100vh;
   padding: 1rem;
   overflow: hidden;
@@ -449,6 +481,7 @@ export default {
   margin-top: 20%;
 }
 
+
 /* button grid al ser presionado */
 .button-grid button.selected {
   background-color: pink;
@@ -489,7 +522,7 @@ button {
 }
 
 .resolve-button {
-  background-color: grey;
+  background-color: #2a6b2c;
   border: none;
   color: white;
   padding: 10px;
@@ -504,7 +537,7 @@ button {
 }
 
 .next-button {
-  background-color: grey;
+  background-color: #2a6b2c;
   border: none;
   color: white;
   padding: 10px;

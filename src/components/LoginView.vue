@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <h1>BIENVENIDOS AL <br> TEST DEL CAIMÁN <br>2024</h1>
+    <h1><br> TEST DEL CAIMÁN <br>2024</h1>
     <img src="../assets/logocaiman.png" alt="Caimán" width="200" height="200">
     <form @submit.prevent="login" class="login-container">
       <input v-model="username" placeholder="Usuario" required />
@@ -15,13 +15,13 @@
         <span class="close" @click="this.closeModal">&times;</span>
         <h3>Pistas de Contraseñas</h3>
         <ul>
-          <li>Aitor:</li>
-          <li>Marcos:</li>
-          <li>Manel:</li>
-          <li>Carla:</li>
-          <li>Noa:</li>
-          <li>Ana:</li>
-          <li>Javier:</li>
+          <li>Aitor: Frase que repites inconscientemente</li>
+          <li>Marcos: Inmueble ideal</li>
+          <li>Manel: Lo que nos separará</li>
+          <li>Carla: En lo que acabarás con tanto concierto y viaje</li>
+          <li>Noa: Lo que nos une aunque sin diagnosticar</li>
+          <li>Ana: Anita_____</li>
+          <li>Javier: Eres el CEO de _______ S.A. (singular)</li>
         </ul>
       </div>
     </div>
@@ -81,6 +81,10 @@ export default {
 
 <style scoped>
 /* Estilos para el componente de login */
+h1{
+  font-size: 2em;
+  color: green;
+}
 .main-div {
   display: flex;
   justify-content: center;
@@ -90,13 +94,13 @@ export default {
   height: 100vh;
   background-color:bisque ; 
   border-radius: 3px solid green;
-  padding: 1rem;
   box-sizing: border-box;
 }
 
 img{
-  margin-bottom: 15px;
+  margin-bottom: 35px;
 }
+
 
 .login-container {
   display: flex;
@@ -131,8 +135,7 @@ button {
   background-color: green; /* Verde */
   border: none;
   color: white;
-  margin-top: 25px;
-  padding: 10px 10px; /* Ajuste de padding para que el texto se ajuste mejor */
+  margin-top: 25px; /* Ajuste de padding para que el texto se ajuste mejor */
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -140,7 +143,8 @@ button {
   cursor: pointer;
   border-radius: 10px;
   overflow: hidden;
-  white-space: nowrap; /* Evita que el texto se desborde */
+  white-space: nowrap; 
+  margin-bottom: 50px;/* Evita que el texto se desborde */
 }
 
 
@@ -148,8 +152,8 @@ button {
 .modal {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 5%;
+  width: 80%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;

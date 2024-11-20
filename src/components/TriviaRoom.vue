@@ -48,10 +48,8 @@
       <button class="next-button" @click="siguientePregunta()">SIGUIENTE PREGUNTA</button>
     </div>
 
-  </div>
-
-  <div v-if="turno === this.username" class="user">
-    <div class="option-grid">
+    <div v-if="turno === this.username" class="user">
+    <div class="option-grid-user">
       <div v-for="(option, index) in currentQuestion.options" :key="index"
         :class="['option', getOptionClass(index), { selected: selectedOption === index }]" @click="selectOption(index)">
         {{ option }}
@@ -59,6 +57,10 @@
     </div>
     <button class="action-button" @click="submitAnswer">Enviar respuesta</button>
   </div>
+
+  </div>
+
+  
 
 
 </template>
@@ -78,6 +80,7 @@ export default {
       currentQuestion: { question: '', options: [], correctAnswer: 0 },
       selectedAnswer: null,
       turnoIndex: 0,
+      selectedOption: null,
       turno: '',
       showScoreModal: false,
       playerAnswers: [],
@@ -133,6 +136,16 @@ export default {
 
     });
 
+    this.socket.on('redirect-to-resultados', () => {
+      this.$router.push({
+        name: 'resultados',
+        query: {
+          username: this.username,
+        }
+      });
+    });
+
+    
 
   },
   methods: {
@@ -165,7 +178,7 @@ export default {
     selectOption(index) {
       this.selectedOption = index;
     },
-    siguientePregunta() {
+    async siguientePregunta() {
       this.elegirJugador();
       // Elimina la pregunta actual
       this.currentQuestionIndex = 0;
@@ -194,8 +207,20 @@ export default {
 
       // Si no quedan preguntas válidas, muestra mensaje de finalización
       if (this.questions.length === 0) {
-        this.currentQuestion = null;
-        console.log("No hay más preguntas disponibles.");
+        const response = await fetch('http://localhost:8000/updatePlayers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ players: this.players }),
+        });
+        const data = await response.json();
+        console.log('Respuesta del servidor:', data);
+
+        
+        this.socket.emit('redirect-to-resultados');
+
+        return;
       }
 
       // Emitir la pregunta actual al servidor mediante sockets
@@ -222,7 +247,7 @@ export default {
       });
 
       // Marcar la respuesta como enviada
-      alert(`Respuesta enviada con indice: ${this.selectedOption}`);
+      alert(`Respuesta enviada: ${this.selectedOption}`);
       this.selectedOption = null;
 
     }, resolver() {
@@ -266,7 +291,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+
+
+.trivia-room {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color:bisque ;
+  min-height: 100vh;
+  text-align: center;
+
+}
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -342,11 +378,6 @@ export default {
   border-radius: 5px;
 }
 
-.trivia-room {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .CosasAdmin {
   display: flex;
@@ -419,11 +450,26 @@ export default {
 }
 
 .option-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  width: 80%;
-  margin: 20px 50px 20px 50px;
+  width: 90%;
+  margin: 40px 50px 20px 30px;
+}
+
+.option-grid-user {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 200%;
+  margin: 40px 50px 20px 30px;
+}
+
+.option-grid-user .option {
+  /* hacer mas alto el boton */
+  padding-top: 35px;
+  padding-bottom: 35px;
+  font-size: 2rem;
 }
 
 .player-row {
@@ -488,18 +534,14 @@ export default {
   margin-top: 20%;
 }
 
-/* button grid al ser presionado */
-.button-grid button.selected {
-  background-color: pink;
+
+.option.selected{
   border-color: black !important;
 }
 
-.button-grid:disabled {
-  background-color: grey;
-}
 
 button {
-  padding: 50px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   color: white;
@@ -507,28 +549,8 @@ button {
   transition: background-color 0.3s;
 }
 
-.button-grid button:nth-child(1) {
-  background-color: #007bff;
-  /* Azul */
-}
-
-.button-grid button:nth-child(2) {
-  background-color: #28a745;
-  /* Verde */
-}
-
-.button-grid button:nth-child(3) {
-  background-color: #dc3545;
-  /* Rojo */
-}
-
-.button-grid button:nth-child(4) {
-  background-color: purple;
-  /* Amarillo */
-}
-
 .resolve-button {
-  background-color: grey;
+  background-color: #2a6b2c;
   border: none;
   color: white;
   padding: 10px;
@@ -543,7 +565,7 @@ button {
 }
 
 .next-button {
-  background-color: grey;
+  background-color: #2a6b2c;
   border: none;
   color: white;
   padding: 10px;
