@@ -34,9 +34,7 @@ fs.readFile('questionsTrivia.json', 'utf8', (err, data) => {
     //ahora mezclamos las preguntas
     questionsTrivia = questionsTrivia.sort(() => Math.random() - 0.5);
 
-
 });
-
 
 fs.readFile('questionsKahoot.json', 'utf8', (err, data) => {
     if (err) {
