@@ -2,8 +2,8 @@
   <div class="question-view">
     <div class="CosasAdmin">
 
-    <button v-if="username === 'admin'" @click="openScoreModal" class="btnAjustar">Ajustes de cuentas</button>
-    <div v-if="showScoreModal" class="modal-overlay">
+      <button v-if="username === 'admin'" @click="openScoreModal" class="btnAjustar">Ajustes de cuentas</button>
+      <div v-if="showScoreModal" class="modal-overlay">
         <div class="modal">
           <div v-for="(player, index) in players" :key="index" class="player-row">
             <p>{{ player.username }}</p>
@@ -17,20 +17,20 @@
         </div>
       </div>
 
-    <div v-if="username === 'admin'" class="player-info">
-      <div class="players">
-        <div v-for="(player, index) in players" :key="index" class="player-details">
+      <div v-if="username === 'admin'" class="player-info">
+        <div class="players">
+          <div v-for="(player, index) in players" :key="index" class="player-details">
 
-          <p>{{ player.username }}</p>
-          <p>{{ player.score }}</p>
+            <p>{{ player.username }}</p>
+            <p>{{ player.score }}</p>
+          </div>
         </div>
       </div>
+
+      <img src="../assets/caimanRoom.png" alt="Caimán" width="150" height="150">
+
     </div>
-    
-    <img src="../assets/caimanRoom.png" alt="Caimán" width="150" height="150">
-    
-    </div>
-    
+
 
 
     <div v-if="username === 'admin'" class="question-section">
@@ -71,6 +71,7 @@ import { io } from 'socket.io-client';
 export default {
   data() {
     return {
+      ip: '192.168.1.35',
       playerName: '',
       playerImage: '',
       questionText: '',
@@ -89,6 +90,7 @@ export default {
     };
   },
   async created() {
+    this.currentQuestionIndex = 0;
     this.username = this.$route.query.username; // Obtener el nombre de usuario de la ruta
 
     this.socket = io(); // Conectar al servidor
@@ -99,7 +101,7 @@ export default {
     this.socket.on('new-answer', (data) => {
       this.playerAnswers.push(data);
       console.log('Respuestas de los jugadores:', this.playerAnswers);
-      
+
 
     });
 
@@ -118,11 +120,14 @@ export default {
     });
 
     try {
-      const response = await fetch('http://localhost:8000/getQuestionsKahoot');
+      // llamar a la api con la ip del servidor
+      const response = await fetch(`http://${this.ip}:8000/getQuestionsKahoot`);
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
       const data = await response.json();
+      console.log('data', data);
+
       this.questions = data.questions;
 
       this.currentQuestion = this.questions[this.currentQuestionIndex];
@@ -133,7 +138,7 @@ export default {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/getConnectedPlayers');
+      const response = await fetch(`http://${this.ip}:8000/getConnectedPlayers`);
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
@@ -155,17 +160,19 @@ export default {
     closeScoreModal() {
       this.showScoreModal = false;
     },
-    adjustScore(player,delta){
+    adjustScore(player, delta) {
       player.score += delta;
-      if(player.score < 0){
+      if (player.score < 0) {
         player.score = 0;
       }
     },
     async next() {
-      if (this.currentQuestionIndex === this.questions.length - 1) {
+      console.log('currentQuestion.id', this.currentQuestion.id);
+      console.log('questions.length', this.questions.length);
+      if (this.currentQuestion.id === this.questions.length ) {
         // push al path TriviaRoom con el username y los players
 
-        const response = await fetch('http://localhost:8000/updatePlayers', {
+        const response = await fetch(`http://${this.ip}:8000/updatePlayers`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -180,17 +187,20 @@ export default {
         //  this.$router.push({ name: 'trivia-room', query: { username: this.username, players: this.players } });
         return;
       }
-      this.currentQuestionIndex++;
-      this.currentQuestion = this.questions[this.currentQuestionIndex];
-      this.selectedOption = null;
-      this.socket.emit('nextQuestion', this.currentQuestion);
+      else {
+        this.currentQuestionIndex++;
+        this.currentQuestion = this.questions[this.currentQuestionIndex];
+        this.selectedOption = null;
+        this.socket.emit('nextQuestion', this.currentQuestion);
 
-      // Limpiar las clases de las opciones
-      const options = document.getElementsByClassName('option');
-      for (let i = 0; i < options.length; i++) {
-        options[i].classList.remove('opcion-correcta');
-        options[i].classList.remove('opcion-incorrecta');
+        // Limpiar las clases de las opciones
+        const options = document.getElementsByClassName('option');
+        for (let i = 0; i < options.length; i++) {
+          options[i].classList.remove('opcion-correcta');
+          options[i].classList.remove('opcion-incorrecta');
+        }
       }
+
     },
     submitAnswer() {
       if (this.selectedOption === null) {
@@ -245,7 +255,7 @@ export default {
               player.score = player.score + 0.1;
             } else {
               console.log('No se ha encontrado el jugador');
-              
+
             }
           });
         }
@@ -260,7 +270,6 @@ export default {
 
 
 <style scoped>
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -337,7 +346,7 @@ export default {
   border-radius: 5px;
 }
 
-.CosasAdmin{
+.CosasAdmin {
   display: flex;
   flex-direction: row;
   gap: 3rem;
@@ -349,7 +358,7 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  background-color:bisque ; 
+  background-color: bisque;
   height: 100vh;
   padding: 1rem;
   overflow: hidden;
@@ -562,7 +571,4 @@ button {
 .opcion-incorrecta {
   background-color: red;
 }
-
-
-
 </style>

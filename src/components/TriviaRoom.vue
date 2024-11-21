@@ -71,6 +71,8 @@ import { io } from 'socket.io-client';
 export default {
   data() {
     return {
+      
+      ip: '192.168.1.35',
       username: this.$route.query.username,
       players: [{ username: '', score: 0 }],
       questions: [],
@@ -91,7 +93,9 @@ export default {
 
 
     try {
-      const response = await fetch('http://localhost:8000/getPlayers');
+      
+      // llamar a la api con la ip del servidor
+      const response = await fetch(`http://${this.ip}:8000/getPlayers`);
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
@@ -105,7 +109,9 @@ export default {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/getQuestionsTrivia');
+      
+      // llamar a la api con la ip del servidor
+      const response = await fetch(`http://${this.ip}:8000/getQuestionsTrivia`);
       if (!response.ok) {
         throw new Error(`Error del servidor: ${response.statusText}`);
       }
@@ -207,7 +213,7 @@ export default {
 
       // Si no quedan preguntas válidas, muestra mensaje de finalización
       if (this.questions.length === 0) {
-        const response = await fetch('http://localhost:8000/updatePlayers', {
+        const response = await fetch(`http://${this.ip}:8000/updatePlayers`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
